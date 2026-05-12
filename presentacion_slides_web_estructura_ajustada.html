@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Presentación Optimización Operacional</title>
+<style>
+:root{
+  --azul:#002b68;
+  --azul2:#005aa7;
+  --celeste:#d9eaf8;
+  --verde:#087536;
+  --verde2:#a8d08d;
+  --amarillo:#ffc20e;
+  --amarillo2:#ffe699;
+  --gris:#eef2f7;
+  --borde:#c9d5e6;
+  --texto:#0b234f;
+  --rojo:#d32f2f;
+  --naranjo:#f39c12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:linear-gradient(135deg,#e9eef6,#f7f9fc);
+  font-family:Arial, Helvetica, sans-serif;
+  color:var(--texto);
+}
+.topbar{
+  position:sticky;top:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:12px 22px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid #d8e0ec;box-shadow:0 6px 20px rgba(0,43,104,.08)
+}
+.brand{font-weight:900;color:var(--azul);letter-spacing:.2px}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{padding:8px 12px;border-radius:999px;text-decoration:none;background:#f0f5fb;color:var(--azul);font-weight:700;font-size:13px;border:1px solid #d9e5f2}.nav a:hover{background:var(--azul);color:#fff}.deck{padding:22px 0 56px}.slide{
+  width:min(98vw,1800px);
+  min-height:1120px;
+  height:auto;
+  margin:24px auto;
+  padding:30px 34px 44px;
+  background:#fff;
+  border-radius:18px;
+  overflow:visible;
+  box-shadow:0 18px 45px rgba(0,43,104,.15);
+  border:1px solid #dde6f2;
+  position:relative
+}
+.slide::after{content:attr(data-slide);position:absolute;right:22px;bottom:14px;color:#91a0b5;font-size:12px;font-weight:700}.section-title{background:var(--azul);color:#fff;text-align:center;font-size:clamp(17px,1.65vw,28px);font-weight:900;padding:9px 12px;border-radius:12px;margin:0 0 12px}.main-title{text-align:center;font-size:clamp(24px,2.2vw,36px);font-weight:900;color:var(--azul);margin:0 0 18px}.green-title{background:var(--verde);color:#fff;text-align:center;font-size:clamp(17px,1.55vw,25px);font-weight:900;padding:9px 12px;border-radius:12px;margin:0 0 12px}.subtitle{font-size:clamp(15px,1.25vw,21px);font-weight:900;color:var(--texto);margin:8px 0 10px}.grid2{display:grid;grid-template-columns:1fr 1.03fr;gap:22px;height:100%}.panel{min-width:0}.mini-chart{display:grid;grid-template-columns:1fr .95fr 1fr;align-items:end;gap:10px;border-bottom:2px solid #a7b3c5;padding-bottom:10px;margin-bottom:12px}.baritem{text-align:center;color:#111}.amount{font-size:clamp(16px,1.35vw,23px);font-weight:900}.bar{width:clamp(78px,7vw,120px);margin:6px auto 4px;border-radius:6px 6px 0 0}.bar.gray{background:#bcbcbc}.bar.blue{background:#003f9a}.label{font-size:clamp(11px,.95vw,15px);line-height:1.18}.saving{text-align:center;color:#00802b;font-size:clamp(15px,1.25vw,22px);font-weight:900;align-self:center}.card{border:2px solid #a7b7d1;border-radius:12px;background:#f7faff;padding:10px;margin-bottom:12px;overflow:hidden}.card-title{text-align:center;font-size:clamp(13px,1.05vw,18px);font-weight:900;margin-bottom:8px}.tbl{width:100%;border-collapse:collapse;color:#111}.tbl th,.tbl td{border:1px solid var(--borde);padding:6px 7px;font-size:clamp(10px,.82vw,14px);line-height:1.22;vertical-align:top}.tbl th{background:#f0f5fb;color:#0b234f;font-weight:900}.summary{border:2px solid #a7b7d1;border-radius:12px;overflow:hidden}.summary-title{background:var(--azul);color:white;text-align:center;font-size:clamp(14px,1.35vw,22px);font-weight:900;padding:7px}.summary-grid{display:grid;grid-template-columns:repeat(3,1fr)}.summary-grid>div{text-align:center;padding:11px;border-right:1px solid #d5deea;color:#111}.summary-grid>div:last-child{border-right:0}.big{font-size:clamp(17px,1.55vw,25px);font-weight:900;color:var(--azul)}.big.green{color:#00802b}.risk-table th,.risk-table td{font-size:clamp(9px,.72vw,12.5px);padding:4.9px 5.5px;line-height:1.13}.legend{margin-top:8px;text-align:center;border:1px solid #d2dae7;background:#f7f9fc;padding:7px;font-size:clamp(10px,.8vw,13px);color:#333;border-radius:10px}.org-grid{display:grid;grid-template-columns:1fr 42px 1fr;gap:14px;height:calc(100% - 90px);align-items:start}.arrow{font-size:54px;color:var(--azul);align-self:center;text-align:center}.box{border-radius:10px;padding:9px 11px;text-align:center;font-weight:900;line-height:1.18;display:inline-flex;align-items:center;justify-content:center;min-height:54px}.box.blueborder{border:2px solid #6d8fcb;background:#f8fafc}.box.greenborder{border:2px solid #81b47f;background:#f8fff7}.box.darkblue{background:#00285f;color:#fff}.box.blue{background:#005aa7;color:#fff}.box.lightblue{background:#b9d7f3;color:#061d3f;border:1px solid #7fa9d2}.box.green{background:#5ba13b;color:#fff}.box.lightgreen{background:#a8d08d;color:#062b12}.box.yellow{background:#ffc20e;color:#111}.box.lightyellow{background:#ffe699;color:#111;border:1px solid #e0bf51}.center{text-align:center}.org-row{display:flex;justify-content:center;gap:16px;margin-top:44px}.org-row.tight{gap:55px}.note{border:2px dashed #b7c4d5;border-radius:12px;background:#f8fbff;padding:11px 14px;margin-top:44px;font-size:clamp(13px,1.02vw,17px);color:#111;line-height:1.25}.note ul{margin:8px 0 0 20px;padding:0}.goal{position:static;margin-top:28px;border:1px solid #d7dde8;border-radius:12px;overflow:hidden}.goal table{width:100%;border-collapse:collapse;font-size:clamp(13px,1.18vw,19px);font-weight:900}.goal td{padding:14px;text-align:center}.goal td:first-child{width:250px;background:var(--azul);color:#fff}.flow-main{height:100%;padding-top:8px}.flow-top{display:flex;justify-content:center}.flow-mid,.flow-low{display:flex;justify-content:center;gap:90px;margin-top:36px}.flow-low{gap:76px;margin-top:70px}.path-grid{display:grid;grid-template-columns:1.15fr .9fr;gap:16px;margin-top:36px}.path{border:1px solid #b7bec9;border-radius:10px;padding:13px;text-align:center;height:150px}.path-title{font-size:15px;font-weight:900;margin-bottom:9px}.path .box{font-size:12px;width:126px;padding:6px}.path .arr{font-size:24px;font-weight:900;vertical-align:middle}.small-caption{font-size:11px;color:#333;display:inline-block;width:125px}.lateral-title{text-align:center;color:#7030a0;font-size:18px;font-weight:900;margin-top:12px}.legend-box{width:300px;margin:12px auto 0;border:1px solid #c3ccd8;border-radius:8px;overflow:hidden;font-size:11px;color:#111}.legend-box .head{background:#00285f;color:#fff;padding:6px;font-weight:900;text-align:center}.legend-box .body{padding:8px 12px;line-height:1.5}.slide4-grid{display:grid;grid-template-columns:1fr 320px;gap:14px}.compact-flow .box{min-height:42px;font-size:12px}.compact-flow .flow-mid{gap:80px;margin-top:26px}.compact-flow .flow-low{gap:70px;margin-top:40px}.compact-flow .path-grid{margin-top:20px}.compact-flow .path{height:135px;padding:9px}.side-card{border:1px solid #c3ccd8;border-radius:8px;overflow:hidden;margin-bottom:8px;font-size:11.4px;color:#111}.side-card .head{background:#00285f;color:white;padding:6px;font-weight:900;text-align:center}.side-card .body{padding:8px;line-height:1.31}.training{margin-top:7px}.training th{background:#00285f!important;color:#fff!important}.training td{font-size:clamp(8.7px,.67vw,11.7px);padding:4.7px}.role-blue{background:#005aa7;color:#fff;font-weight:900}.role-yellow{background:#ffe36d;color:#111;font-weight:900}.role-lightblue{background:#b9d7f3;color:#061d3f;font-weight:900}.role-green{background:#a8d08d;color:#062b12;font-weight:900}.priority-high{text-align:center;color:var(--rojo);font-weight:900}.priority-med{text-align:center;color:var(--naranjo);font-weight:900}.footnote{text-align:center;font-size:9px;color:#333;margin-top:3px}.slide.tall{min-height:1280px}.slide4-grid{align-items:start}.slide4-grid + .training{clear:both}
+@media(min-width:1200px){
+  .slide.tall .training td{font-size:11.8px;line-height:1.22}
+  .slide.tall .risk-table th,.slide.tall .risk-table td{font-size:12.2px;line-height:1.18;padding:6px}
+}
+@media(max-width:1100px){
+  .slide{min-height:auto;padding:22px 18px}
+  .grid2,.org-grid,.slide4-grid,.path-grid{grid-template-columns:1fr}
+  .arrow{display:none}
+  .goal{position:static;margin-top:20px}
+}
+@media(max-width:900px){.topbar{align-items:flex-start;flex-direction:column}.slide{width:98vw}.nav a{font-size:12px;padding:7px 9px}}
+
+/* ==== AJUSTE SLIDE 4: evita desfases y cruces ==== */
+#slide4{
+  min-height:1500px;
+  padding-top:34px;
+}
+#slide4 .slide4-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 400px;
+  gap:26px;
+  align-items:start;
+}
+#slide4 .compact-flow{
+  min-width:0;
+  padding-top:8px;
+}
+#slide4 .compact-flow .flow-top{
+  margin-bottom:34px;
+}
+#slide4 .compact-flow .flow-mid{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(210px,1fr));
+  gap:34px;
+  margin-top:0;
+}
+#slide4 .compact-flow .flow-low{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(180px,1fr));
+  gap:42px;
+  margin-top:54px;
+  padding:0 34px;
+}
+#slide4 .compact-flow .flow-mid .box,
+#slide4 .compact-flow .flow-low .box{
+  width:100% !important;
+  margin-right:0 !important;
+}
+#slide4 .compact-flow .path-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:18px;
+  margin-top:48px;
+}
+#slide4 .compact-flow .path{
+  height:auto;
+  min-height:152px;
+  padding:18px 16px 20px;
+  overflow:visible;
+}
+#slide4 .compact-flow .path .box{
+  width:150px;
+  min-height:58px;
+  padding:7px 8px;
+  font-size:12px;
+  vertical-align:middle;
+}
+#slide4 .compact-flow .path .arr{
+  display:inline-block;
+  font-size:30px;
+  width:34px;
+  text-align:center;
+  vertical-align:middle;
+}
+#slide4 .compact-flow .small-caption{
+  width:150px;
+  font-size:12px;
+  line-height:1.18;
+  margin-top:8px;
+}
+#slide4 .lateral-title{
+  margin-top:24px !important;
+  margin-bottom:10px;
+  clear:both;
+}
+#slide4 .lateral-title + .center{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:70px;
+  margin-top:0 !important;
+}
+#slide4 .lateral-title + .center .box{
+  margin-right:0 !important;
+}
+#slide4 aside{
+  min-width:0;
+}
+#slide4 .side-card{
+  font-size:14px;
+  margin-bottom:14px;
+}
+#slide4 .side-card .head{
+  font-size:15px;
+  padding:10px;
+}
+#slide4 .side-card .body{
+  padding:13px 14px;
+  line-height:1.42;
+}
+#slide4 .training{
+  margin-top:30px;
+}
+#slide4 .training th{
+  font-size:13px;
+  padding:10px 8px;
+}
+#slide4 .training td{
+  font-size:12.2px;
+  line-height:1.26;
+  padding:8px 9px;
+}
+@media(max-width:1300px){
+  #slide4 .slide4-grid{grid-template-columns:1fr;}
+  #slide4 aside{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+}
+@media(max-width:900px){
+  #slide4 aside{display:block;}
+  #slide4 .compact-flow .flow-mid,
+  #slide4 .compact-flow .flow-low{grid-template-columns:1fr;padding:0;}
+  #slide4 .compact-flow .path .arr{display:block;margin:6px auto;}
+  #slide4 .lateral-title + .center{flex-direction:column;gap:12px;}
+}
+
+
+
+/* ==== TOOLTIP FUNCIONES POR CARGO ==== */
+.role-tooltip{
+  position:fixed;
+  z-index:9999;
+  width:min(430px, calc(100vw - 32px));
+  background:#ffffff;
+  color:#0b234f;
+  border:1px solid #c9d5e6;
+  border-top:6px solid #002b68;
+  border-radius:16px;
+  box-shadow:0 18px 45px rgba(0,43,104,.24);
+  padding:14px 16px 16px;
+  opacity:0;
+  transform:translateY(8px);
+  pointer-events:none;
+  transition:opacity .16s ease, transform .16s ease;
+  font-size:13px;
+  line-height:1.28;
+}
+.role-tooltip.visible{opacity:1;transform:translateY(0)}
+.role-tooltip h3{
+  margin:0 0 8px;
+  font-size:15px;
+  font-weight:900;
+  color:#002b68;
+}
+.role-tooltip table{width:100%;border-collapse:collapse}
+.role-tooltip th,.role-tooltip td{border:1px solid #d8e0ec;padding:6px;vertical-align:top}
+.role-tooltip th{background:#f0f5fb;color:#002b68;text-align:left;font-size:12px}
+.role-tooltip td:first-child{font-weight:800;width:45%}
+.has-role-tooltip{cursor:help;position:relative;outline-offset:3px}
+.has-role-tooltip:hover{filter:brightness(1.03);box-shadow:0 8px 22px rgba(0,43,104,.18)}
+@media(max-width:900px){.role-tooltip{font-size:12px;width:calc(100vw - 24px)}}
+
+
+
+/* ==== VERSIÓN CUADRADA SLIDE 4 + BOTÓN OCULTAR INFORMACIÓN ==== */
+.slide-head-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:24px;
+}
+.info-toggle{
+  border:1px solid #c8d8ea;
+  background:#eef5fd;
+  color:#002b68;
+  border-radius:999px;
+  padding:11px 18px;
+  font-weight:900;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,43,104,.10);
+  white-space:nowrap;
+}
+.info-toggle:hover{background:#002b68;color:#fff}
+#slide4{
+  min-height:1180px;
+  padding:34px 42px 54px;
+}
+#slide4 .fixed-layout{
+  display:grid;
+  grid-template-columns:minmax(980px,1fr) 360px;
+  gap:26px;
+  align-items:start;
+}
+#slide4 .flow-board{
+  border:1px solid #d8e0ec;
+  border-radius:18px;
+  background:#fbfdff;
+  padding:28px 30px 30px;
+  min-width:0;
+}
+#slide4 .flow-level{display:flex;justify-content:center;align-items:center}
+#slide4 .top-level{margin-bottom:38px}
+#slide4 .three-cols{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0,1fr));
+  gap:42px;
+  margin-bottom:58px;
+}
+#slide4 .three-cols.operators{margin-bottom:0;padding:0 88px;gap:64px}
+#slide4 .three-cols .box{
+  width:100%;
+  min-height:84px;
+  font-size:18px;
+  border-radius:14px;
+}
+#slide4 .operators .box{min-height:72px;font-size:17px}
+#slide4 .clean-paths{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+  margin-top:34px;
+}
+#slide4 .clean-path{
+  height:auto;
+  min-height:205px;
+  padding:18px;
+  background:#fff;
+  border:1px solid #b7c4d6;
+  border-radius:16px;
+  overflow:visible;
+}
+#slide4 .path-title{
+  text-align:center;
+  font-size:18px;
+  margin-bottom:18px;
+}
+#slide4 .path-steps{
+  display:grid;
+  align-items:start;
+  gap:10px;
+}
+#slide4 .path-steps.four{grid-template-columns:1fr 34px 1fr 34px 1fr 34px 1fr}
+#slide4 .path-steps.three{grid-template-columns:1fr 34px 1fr 34px 1fr}
+#slide4 .step{display:flex;flex-direction:column;align-items:center;gap:9px;min-width:0}
+#slide4 .step .box{
+  width:100%;
+  min-height:62px;
+  font-size:13px;
+  padding:8px;
+  border-radius:13px;
+}
+#slide4 .step small{
+  display:block;
+  font-size:12px;
+  line-height:1.16;
+  color:#222;
+  text-align:center;
+}
+#slide4 .arrow-step{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:62px;
+  font-size:30px;
+  font-weight:900;
+  color:#063579;
+}
+#slide4 .green-arr{color:#397b22}
+#slide4 .lateral-card{
+  margin-top:24px;
+  border:1px dashed #c7b4dd;
+  background:#fbf8ff;
+  border-radius:16px;
+  padding:16px 18px 20px;
+}
+#slide4 .lateral-title{
+  margin:0 0 14px!important;
+  font-size:22px;
+}
+#slide4 .lateral-boxes{
+  display:grid;
+  grid-template-columns:1fr 60px 1fr;
+  gap:18px;
+  align-items:center;
+}
+#slide4 .lateral-boxes .box{width:100%;min-height:72px;font-size:16px}
+#slide4 .side-arrow{font-size:34px;font-weight:900;color:#7030a0;text-align:center}
+#slide4 .info-side{display:flex;flex-direction:column;gap:14px}
+#slide4 .side-card{margin:0;font-size:14px;border-radius:14px;box-shadow:0 8px 24px rgba(0,43,104,.07)}
+#slide4 .side-card .head{font-size:15px;padding:11px 12px}
+#slide4 .side-card .body{padding:14px 15px;line-height:1.43}
+#slide4 .training-wrap{margin-top:28px}
+#slide4 .training th{font-size:13.5px;padding:11px 10px}
+#slide4 .training td{font-size:12.4px;line-height:1.28;padding:9px 10px}
+#slide4.hide-info .info-content{display:none!important}
+#slide4.hide-info .fixed-layout{grid-template-columns:1fr;max-width:1320px;margin:0 auto}
+#slide4.hide-info .flow-board{padding:34px 42px 40px}
+#slide4.hide-info .info-toggle{background:#002b68;color:#fff}
+@media(max-width:1450px){
+  #slide4 .fixed-layout{grid-template-columns:1fr}
+  #slide4 .info-side{display:grid;grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:1050px){
+  .slide-head-row{flex-direction:column;align-items:flex-start}
+  #slide4{padding:26px 18px}
+  #slide4 .three-cols,#slide4 .three-cols.operators,#slide4 .clean-paths,#slide4 .info-side{grid-template-columns:1fr;padding:0;gap:16px;margin-bottom:22px}
+  #slide4 .path-steps.four,#slide4 .path-steps.three{grid-template-columns:1fr}
+  #slide4 .arrow-step{height:auto;transform:rotate(90deg)}
+  #slide4 .lateral-boxes{grid-template-columns:1fr}
+}
+
+
+/* ==== AJUSTE SLIDE 2: estructura más compacta y sin desborde ==== */
+#slide2{
+  min-height:980px;
+  padding:26px 30px 42px;
+  overflow:visible;
+}
+#slide2 .main-title{
+  font-size:clamp(22px,1.75vw,31px);
+  margin-bottom:16px;
+}
+#slide2 .org-grid{
+  grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr);
+  gap:12px;
+  height:auto;
+  align-items:stretch;
+}
+#slide2 .org-grid > div:not(.arrow){
+  min-width:0;
+  border:1px solid #d8e0ec;
+  border-radius:16px;
+  padding:16px 14px 14px;
+  background:#fbfdff;
+}
+#slide2 .section-title,#slide2 .green-title{
+  font-size:clamp(16px,1.25vw,22px);
+  padding:8px 10px;
+  margin-bottom:14px;
+}
+#slide2 .center{margin-top:20px!important}
+#slide2 .center .box{
+  width:min(300px,100%)!important;
+  font-size:clamp(13px,1vw,16px)!important;
+  min-height:66px;
+}
+#slide2 .org-row,#slide2 .org-row.tight{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(128px,1fr));
+  gap:10px;
+  margin-top:24px!important;
+  width:100%;
+}
+#slide2 .org-row .box{
+  width:100%!important;
+  min-height:74px;
+  font-size:clamp(11px,.78vw,13px)!important;
+  padding:8px 7px;
+  line-height:1.12;
+}
+#slide2 .note{
+  margin-top:24px!important;
+  padding:10px 12px;
+  font-size:clamp(11.5px,.85vw,14px);
+  line-height:1.2;
+}
+#slide2 .note .card-title{font-size:clamp(13px,1vw,16px);margin-bottom:6px}
+#slide2 .note ul{margin:6px 0 0 16px}
+#slide2 .arrow{
+  font-size:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#slide2 .goal{margin-top:18px}
+#slide2 .goal table{font-size:clamp(11.5px,.9vw,15px)}
+#slide2 .goal td{padding:10px 8px}
+#slide2 .goal td:first-child{width:190px}
+@media(max-width:1350px){
+  #slide2 .org-grid{grid-template-columns:1fr;gap:14px}
+  #slide2 .arrow{display:none}
+  #slide2 .goal table,#slide2 .goal tbody,#slide2 .goal tr,#slide2 .goal td{display:block;width:100%!important}
+  #slide2 .goal td{border-bottom:1px solid #e2e8f0}
+}
+
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">Presentación Optimización Operacional</div>
+  <nav class="nav">
+    <a href="#slide1">Costos y riesgos</a>
+    <a href="#slide2">Estructura</a>
+    <a href="#slide3">Movilidad</a>
+    <a href="#slide4">Capacitación</a>
+  </nav>
+</header>
+<main class="deck">
+<section class="slide tall" id="slide1" data-slide="Slide 1 / 4">
+  <div class="grid2">
+    <div class="panel">
+      <h2 class="section-title">COMPARACIÓN DE COSTOS</h2>
+      <div class="subtitle">1) 2026 – AÑO DE TRANSICIÓN</div>
+      <div class="mini-chart">
+        <div class="baritem"><div class="amount">$33.110.076</div><div class="bar gray" style="height:132px"></div><div class="label">Si seguimos<br>con TNF todo el año</div></div>
+        <div class="saving">AHORRO 2026<br>$9.987.858<br>(-30,2%)</div>
+        <div class="baritem"><div class="amount">$23.122.218</div><div class="bar blue" style="height:92px"></div><div class="label">Modelo mixto real 2026<br>(TNF ene-jun + Interno jul-dic)</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Detalle modelo mixto real 2026</div>
+        <table class="tbl"><tr><th>Concepto</th><th>Cálculo</th><th>Total</th></tr><tr><td>TNF enero–junio</td><td style="text-align:center">$2.759.173 × 6</td><td style="text-align:center">$16.555.038</td></tr><tr><td>Operador interno julio–diciembre</td><td style="text-align:center">$1.094.530 × 6</td><td style="text-align:center">$6.567.180</td></tr><tr><td><b>Total real 2026</b></td><td></td><td style="text-align:center"><b>$23.122.218</b></td></tr></table>
+      </div>
+      <div class="subtitle">2) 2027 – IMPACTO ECONÓMICO REAL (RÉGIMEN)</div>
+      <div class="mini-chart" style="margin-bottom:10px">
+        <div class="baritem"><div class="amount">$33.110.076</div><div class="bar gray" style="height:105px"></div><div class="label">Si seguimos<br>con TNF todo el año</div></div>
+        <div class="saving">AHORRO 2027<br>$19.975.716<br>(-60,3%)</div>
+        <div class="baritem"><div class="amount">$13.134.360</div><div class="bar blue" style="height:58px"></div><div class="label">Modelo interno 2027<br>(operador todo el año)</div></div>
+      </div>
+      <div class="summary"><div class="summary-title">RESUMEN 2026–2027</div><div class="summary-grid"><div><div>Si seguimos con TNF</div><div class="big">$66.220.152</div></div><div><div>Modelo con operador interno</div><div class="big">$36.256.578</div></div><div><div>AHORRO TOTAL 2026–2027</div><div class="big green">$29.963.574</div><div class="big green">(-45,3%)</div></div></div></div>
+    </div>
+    <div class="panel">
+      <h2 class="section-title">COMPARACIÓN DE RIESGOS</h2>
+      <table class="tbl risk-table"><tr><th>Dimensión</th><th>Externo<br>(TNF)</th><th>Tipo de riesgo<br>(Externo)</th><th>Interno<br>(Operador)</th><th>Tipo de riesgo<br>(Interno)</th></tr>
+<tr><td><b>💰 Costo</b></td><td>🔴 Alto</td><td>Financiero<br>(sobrecosto estructural)</td><td>🟢 Bajo en régimen</td><td>Financiero<br>(optimización)</td></tr>
+<tr><td><b>📈 Flexibilidad</b></td><td>🟢 Alta</td><td>Operativo<br>(adaptabilidad)</td><td>🔴 Baja</td><td>Operativo<br>(rigidez)</td></tr>
+<tr><td><b>⚙️ Control operativo</b></td><td>🟡 Medio</td><td>Operativo<br>(control limitado)</td><td>🟢 Alto</td><td>Operativo<br>(gestión interna)</td></tr>
+<tr><td><b>👤 Dependencia</b></td><td>🟢 Baja</td><td>Operativo<br>(proveedor cubre)</td><td>🔴 Alta</td><td>Operativo<br>(persona clave)</td></tr>
+<tr><td><b>🔄 Continuidad operacional</b></td><td>🟢 Alta</td><td>Operativo<br>(reemplazo externo)</td><td>🟡 Media</td><td>Operativo<br>(riesgo de interrupción)</td></tr>
+<tr><td><b>⚖️ Riesgo legal laboral</b></td><td>🟢 Bajo</td><td>Legal<br>(bajo vínculo directo)</td><td>🟡 Medio</td><td>Legal<br>(polifuncionalidad)</td></tr>
+<tr><td><b>📄 Riesgo contractual</b></td><td>🟡 Medio</td><td>Legal<br>(dependencia contrato)</td><td>🟢 Bajo</td><td>Legal<br>(control interno)</td></tr>
+<tr><td><b>🧩 Duplicidad funciones</b></td><td>🟢 Baja</td><td>Operativo<br>(roles definidos)</td><td>🔴 Alta</td><td>Operativo<br>(mal diseño del rol)</td></tr>
+<tr><td><b>📉 Subutilización</b></td><td>🔴 Alta</td><td>Financiero<br>(ineficiencia)</td><td>🟡 Media</td><td>Financiero<br>(uso del recurso)</td></tr>
+<tr><td><b>🎓 Desarrollo interno</b></td><td>🔴 Nulo</td><td>Estratégico<br>(dependencia externa)</td><td>🟢 Alto</td><td>Estratégico<br>(formación interna)</td></tr>
+<tr><td><b>⭐ Especialización</b></td><td>🟢 Alta</td><td>Operativo<br>(expertise externo)</td><td>🟡 Media</td><td>Operativo<br>(limitación técnica)</td></tr>
+<tr><td><b>📈 Escalabilidad</b></td><td>🟢 Alta</td><td>Operativo<br>(flexibilidad proveedor)</td><td>🔴 Baja</td><td>Operativo<br>(estructura fija)</td></tr>
+<tr><td><b>🧾 Trazabilidad</b></td><td>🔴 Baja</td><td>Operativo<br>(falta de control)</td><td>🟢 Alta</td><td>Operativo<br>(gestión directa)</td></tr>
+<tr><td><b>🎯 Impacto en negocio</b></td><td>🟡 Indirecto</td><td>Estratégico<br>(soporte)</td><td>🟡 Indirecto</td><td>Estratégico<br>(soporte)</td></tr></table>
+      <div class="legend">🟢 Favorable / Ventaja &nbsp;&nbsp; 🟡 Neutro / Intermedio &nbsp;&nbsp; 🔴 Desfavorable / Riesgo</div>
+    </div>
+  </div>
+</section>
+<section class="slide" id="slide2" data-slide="Slide 2 / 4">
+  <h1 class="main-title">COMPARACIÓN DE ESTRUCTURA ORGANIZACIONAL</h1>
+  <div class="org-grid">
+    <div><h2 class="section-title">ESTRUCTURA ACTUAL</h2><div class="center" style="margin-top:35px"><div class="box blueborder" style="width:330px;font-size:19px">👤<br>Jefe de Soporte Operacional<br>y Mejora Continua<br>(1 HC)</div></div><div class="org-row"><div class="box blueborder" style="width:170px;font-size:14px">👤<br>Asistente Administrativa y Planificadora<br>(1 HC)</div><div class="box blueborder" style="width:180px;font-size:14px">👤<br>Supervisor de Servicios Generales<br>(1 HC)</div><div class="box blueborder" style="width:180px;font-size:14px">👤<br>Operador Senior de Mantención<br>(1 HC)</div><div class="box blueborder" style="width:180px;font-size:14px">👤<br>Operadores de Mantención<br>(3 HC)</div></div><div class="note"><div class="card-title">RESUMEN ACTUAL</div><ul><li>6 personas.</li><li>Estructura con roles operativos definidos, sin supervisión de mantención formal ni diferenciación clara de funciones.</li><li>Planificación y administración concentradas en un solo cargo.</li></ul></div></div>
+    <div class="arrow">›</div>
+    <div><h2 class="green-title">NUEVA ESTRUCTURA PROPUESTA</h2><div class="center" style="margin-top:35px"><div class="box greenborder" style="width:330px;font-size:19px">👤<br>Jefe de Soporte Operacional<br>y Mejora Continua<br>(1 HC)</div></div><div class="org-row tight"><div class="box greenborder" style="width:200px;font-size:14px">👤<br>Asistente de Planificación y Control<br>(1 HC)</div><div class="box greenborder" style="width:220px;font-size:14px">👤<br>Supervisor de Mantención<br>(1 HC)</div><div class="box greenborder" style="width:220px;font-size:14px">👤<br>Supervisor de Servicios Generales<br>(1 HC)</div></div><div class="org-row" style="margin-top:32px;gap:150px"><div class="box greenborder" style="width:210px;font-size:14px">👤<br>Operador de Mantención<br>(2 HC)</div><div class="box greenborder" style="width:220px;font-size:14px">👤<br>Operador de Servicios Generales<br>(1 HC)</div></div><div class="note" style="background:#f8fff7;border-color:#b7d3b6;margin-top:32px"><div class="card-title" style="color:#0d6d27">RESUMEN NUEVA ESTRUCTURA</div><ul><li>6 personas, sin aumento de dotación.</li><li>Se formaliza la supervisión de mantención y se separan claramente las funciones de planificación y administración.</li><li>Mayor claridad de roles y jerarquías para una gestión más eficiente.</li></ul></div></div>
+  </div>
+  <div class="goal"><table><tr><td>🎯 OBJETIVO DEL CAMBIO</td><td>🏢 Claridad organizacional</td><td>📋 Mejor planificación y control</td><td>📈 Mayor eficiencia operacional</td><td>👥 Desarrollo de competencias</td></tr></table></div>
+</section>
+<section class="slide" id="slide3" data-slide="Slide 3 / 4">
+  <div class="flow-main">
+    <div class="flow-top"><div class="box darkblue" style="width:310px;font-size:16px">👤 JEFE DE SOPORTE<br>OPERACIONAL</div></div>
+    <div class="flow-mid"><div class="box green" style="width:310px;font-size:15px">👤 ASISTENTE DE PLANIFICACIÓN<br>Y CONTROL</div><div class="box blue" style="width:310px;font-size:15px">👤 SUPERVISOR DE<br>MANTENCIÓN</div><div class="box yellow" style="width:290px;font-size:15px">👤 SUPERVISOR DE<br>SERVICIOS GENERALES</div></div>
+    <div class="flow-low"><div class="box lightblue" style="width:230px;font-size:15px">👤 OPERADOR DE<br>MANTENCIÓN</div><div class="box lightblue" style="width:230px;font-size:15px">👤 OPERADOR DE<br>MANTENCIÓN</div><div class="box lightyellow" style="width:260px;font-size:15px">👤 OPERADOR DE<br>SERVICIOS GENERALES</div></div>
+    <div class="path-grid"><div class="path"><div class="path-title" style="color:#063579">LÍNEA OPERATIVA (Mantención)</div><span class="box lightyellow">👤<br>OPERADOR DE<br>SERVICIOS GENERALES</span><span class="arr">➜</span><span class="box lightblue">OPERADOR DE<br>MANTENCIÓN</span><span class="arr">➜</span><span class="box lightblue">OPERADOR<br>SENIOR</span><span class="arr">➜</span><span class="box blue">SUPERVISOR DE<br>MANTENCIÓN</span><br><span class="small-caption"></span><span class="small-caption">2 años + formación técnica</span><span class="small-caption">5 años + experiencia en planta</span><span class="small-caption">Experiencia + competencias</span></div><div class="path"><div class="path-title" style="color:#397b22">LÍNEA TÉCNICA / PROFESIONAL</div><span class="box lightblue">OPERADOR DE<br>MANTENCIÓN</span><span class="arr" style="color:#397b22">➜</span><span class="box lightgreen">ASISTENTE DE<br>PLANIFICACIÓN<br>Y CONTROL</span><span class="arr" style="color:#397b22">➜</span><span class="box green">PLANIFICADOR DE<br>MANTENCIÓN<br>(Futuro)</span><br><span class="small-caption">Formación universitaria</span><span class="small-caption"></span><span class="small-caption">Experiencia + desarrollo</span></div></div>
+    <div class="lateral-title">MOVILIDAD LATERAL</div><div class="center" style="margin-top:9px"><div class="box lightblue" style="width:200px;font-size:13px;margin-right:520px">OPERADOR DE<br>MANTENCIÓN</div><div class="box lightyellow" style="width:230px;font-size:13px">OPERADOR DE SERVICIOS<br>GENERALES</div></div>
+    <div class="legend-box"><div class="head">LEYENDA MOVILIDAD</div><div class="body">— Línea de reporte jerárquica<br>- - Movilidad hacia supervisión de mantención<br>- - Movilidad hacia supervisión de servicios generales<br>- - Movilidad hacia planificación<br>- - Movilidad lateral entre roles</div></div>
+  </div>
+</section>
+<section class="slide tall" id="slide4" data-slide="Slide 4 / 4">
+  <div class="slide-head-row">
+    <h1 class="main-title" style="margin:0">MOVILIDAD, REQUISITOS Y CAPACITACIÓN</h1>
+    <button class="info-toggle" type="button" aria-pressed="false">Ocultar información complementaria</button>
+  </div>
+
+  <div class="slide4-grid fixed-layout">
+    <div class="flow-board">
+      <div class="flow-level top-level">
+        <div class="box darkblue" style="width:330px;font-size:16px">👤 JEFE DE SOPORTE<br>OPERACIONAL</div>
+      </div>
+
+      <div class="flow-level three-cols">
+        <div class="box green">👤 ASISTENTE DE PLANIFICACIÓN<br>Y CONTROL</div>
+        <div class="box blue">👤 SUPERVISOR DE<br>MANTENCIÓN</div>
+        <div class="box yellow">👤 SUPERVISOR DE<br>SERVICIOS GENERALES</div>
+      </div>
+
+      <div class="flow-level three-cols operators">
+        <div class="box lightblue">👤 OPERADOR DE<br>MANTENCIÓN</div>
+        <div class="box lightblue">👤 OPERADOR DE<br>MANTENCIÓN</div>
+        <div class="box lightyellow">👤 OPERADOR DE<br>SERVICIOS GENERALES</div>
+      </div>
+
+      <div class="path-grid clean-paths">
+        <div class="path clean-path">
+          <div class="path-title" style="color:#063579">LÍNEA OPERATIVA (Mantención)</div>
+          <div class="path-steps four">
+            <div class="step"><span class="box lightyellow">OPERADOR DE<br>SERVICIOS GENERALES</span></div>
+            <div class="arrow-step">➜</div>
+            <div class="step"><span class="box lightblue">OPERADOR DE<br>MANTENCIÓN</span><small>2 años + formación técnica</small></div>
+            <div class="arrow-step">➜</div>
+            <div class="step"><span class="box lightblue">OPERADOR<br>SENIOR</span><small>5 años + experiencia en planta</small></div>
+            <div class="arrow-step">➜</div>
+            <div class="step"><span class="box blue">SUPERVISOR DE<br>MANTENCIÓN</span><small>Experiencia + competencias</small></div>
+          </div>
+        </div>
+
+        <div class="path clean-path">
+          <div class="path-title" style="color:#397b22">LÍNEA TÉCNICA / PROFESIONAL</div>
+          <div class="path-steps three">
+            <div class="step"><span class="box lightblue">OPERADOR DE<br>MANTENCIÓN</span><small>Formación universitaria</small></div>
+            <div class="arrow-step green-arr">➜</div>
+            <div class="step"><span class="box lightgreen">ASISTENTE DE<br>PLANIFICACIÓN<br>Y CONTROL</span></div>
+            <div class="arrow-step green-arr">➜</div>
+            <div class="step"><span class="box green">PLANIFICADOR DE<br>MANTENCIÓN<br>(Futuro)</span><small>Experiencia + desarrollo</small></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lateral-card">
+        <div class="lateral-title">MOVILIDAD LATERAL</div>
+        <div class="lateral-boxes">
+          <div class="box lightblue">OPERADOR DE<br>MANTENCIÓN</div>
+          <div class="side-arrow">↔</div>
+          <div class="box lightyellow">OPERADOR DE SERVICIOS<br>GENERALES</div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="info-content info-side">
+      <div class="side-card"><div class="head">LEYENDA MOVILIDAD</div><div class="body">— Línea de reporte jerárquica<br>- - Movilidad hacia supervisión de mantención<br>- - Movilidad hacia supervisión de servicios generales<br>- - Movilidad hacia planificación<br>- - Movilidad lateral entre roles</div></div>
+      <div class="side-card"><div class="head">REQUISITOS PRINCIPALES POR ROL</div><div class="body"><b>Supervisores:</b><br>Licencia Clase B (Requerida)<br>Licencia Clase D (Deseable)<br><br><b>Operadores de Mantención:</b><br>Licencia Clase B (Requerida)<br>Licencia Clase D (Requerida)<br><br><b>Operador de Servicios Generales:</b><br>Licencia Clase B (Deseable)<br>Licencia Clase D (Deseable)<br><br><b>Asistente de Planificación y Control:</b><br>Licencia Clase B (Deseable)</div></div>
+      <div class="side-card"><div class="head">RECURSOS DEL ÁREA (USO COMPARTIDO)</div><div class="body">🚚 <b>Camión de Mantención</b><br>Uso: Supervisores y Operadores. Traslado de repuestos, herramientas y materiales.<br><br>🏗️ <b>Grúa (Activo del área)</b><br>Uso: Operadores de Mantención. Supervisores validan y aseguran condiciones seguras.</div></div>
+    </aside>
+  </div>
+
+  <div class="info-content training-wrap">
+    <table class="tbl training"><tr><th>ROL</th><th>CAPACITACIONES REQUERIDAS</th><th>¿POR QUÉ ES NECESARIA?</th><th>PRIORIDAD</th></tr>
+      <tr><td class="role-blue">👤 SUPERVISOR DE<br>MANTENCIÓN</td><td>• Excel Avanzado y Análisis de Datos<br>• Indicadores y Reportería<br>• Comunicación Efectiva y Liderazgo<br>• Gestión de Equipos y Resolución de Problemas</td><td>• Para gestionar el área con información clara y oportuna.<br>• Para controlar backlog, planes y desempeño del equipo.<br>• Para fortalecer liderazgo, comunicación y manejo de conflictos.<br>• Para tomar decisiones y mejorar la eficiencia operativa.</td><td class="priority-high">ALTA<br>🔴</td></tr>
+      <tr><td class="role-yellow">👤 SUPERVISOR DE<br>SERVICIOS GENERALES</td><td>• Excel Intermedio<br>• Comunicación Efectiva<br>• Gestión de Servicios y Recursos<br>• Seguridad y Prevención de Riesgos</td><td>• Para controlar solicitudes, recursos y gastos del área.<br>• Para mejorar coordinación con otros equipos y contratistas.<br>• Para administrar servicios, activos y mantenciones menores.<br>• Para asegurar cumplimiento de normas y reducir riesgos.</td><td class="priority-med">MEDIA<br>🟠</td></tr>
+      <tr><td class="role-lightblue">👤 OPERADORES DE<br>MANTENCIÓN</td><td>• Licencia Clase D (Obligatoria)<br>• Mantención Eléctrica (Básico/Intermedio)<br>• Mantención Mecánica (Básico/Intermedio)<br>• Seguridad en Trabajos de Mantención</td><td>• Para operar camión y grúa de forma segura y legal.<br>• Para diagnosticar y reparar fallas eléctricas de equipos.<br>• Para mantener equipos mecánicos y sistemas asociados.<br>• Para trabajar de forma segura y reducir incidentes.</td><td class="priority-high">ALTA<br>🔴</td></tr>
+      <tr><td class="role-yellow">👤 OPERADOR DE<br>SERVICIOS GENERALES</td><td>• Licencia Clase D (Deseable – a futuro)<br>• Mantención Básica e Inspección de Equipos<br>• Seguridad y Orden en el Trabajo</td><td>• Para ampliar su perfil y apoyar en traslado y operación de equipos.<br>• Para realizar mantenciones básicas y reportar anomalías.<br>• Para mantener estándares de seguridad y orden en la planta.</td><td class="priority-med">MEDIA<br>🟠</td></tr>
+      <tr><td class="role-green">👤 ASISTENTE DE<br>PLANIFICACIÓN Y CONTROL</td><td>• Planificación de Mantención (SAP PM o similar)<br>• Excel Avanzado y Power BI<br>• Gestión de Activos y Confiabilidad</td><td>• Para planificar y programar mantenciones de forma estructurada.<br>• Para analizar datos, generar reportes y visualizaciones.<br>• Para optimizar la vida útil de activos y reducir costos.</td><td class="priority-high">ALTA<br>🔴</td></tr>
+    </table>
+    <div class="footnote">ⓘ Todas las capacitaciones consideran actualización periódica según necesidades del área y evaluación de desempeño.</div>
+  </div>
+</section>
+</main>
+
+<script>
+const roleFunctions = {
+  jefe: {
+    title: '🔷 Jefe de Soporte Operacional y Mejora Continua',
+    color: '#002b68',
+    rows: [
+      ['Definir prioridades operacionales', 'Enfoca recursos en actividades críticas para la continuidad operacional.'],
+      ['Controlar desempeño e indicadores del área', 'Permite tomar decisiones basadas en datos y mejorar eficiencia.'],
+      ['Liderar mejora continua y optimización', 'Reduce costos operacionales y mejora productividad.'],
+      ['Coordinar planificación y ejecución operativa', 'Asegura continuidad y alineamiento entre áreas.']
+    ]
+  },
+  asistente: {
+    title: '🟢 Asistente de Planificación y Control',
+    color: '#5ba13b',
+    rows: [
+      ['Planificar mantenciones preventivas y correctivas', 'Reduce fallas y detenciones operacionales.'],
+      ['Gestionar backlog y órdenes de trabajo', 'Mejora control y cumplimiento operativo.'],
+      ['Controlar trazabilidad en SAP PM', 'Asegura seguimiento y control de mantenciones.'],
+      ['Generar reportes e indicadores', 'Facilita toma de decisiones y control de gestión.']
+    ]
+  },
+  supervisorMantencion: {
+    title: '🔵 Supervisor de Mantención',
+    color: '#005aa7',
+    rows: [
+      ['Supervisar ejecución de mantenciones', 'Asegura calidad y continuidad operacional.'],
+      ['Coordinar recursos y trabajos en terreno', 'Optimiza tiempos y uso de recursos.'],
+      ['Validar cumplimiento de planificación', 'Reduce atrasos y reprocesos.'],
+      ['Controlar seguridad y ejecución técnica', 'Disminuye riesgos operacionales y fallas.']
+    ]
+  },
+  operadorMantencion: {
+    title: '⚙️ Operador de Mantención',
+    color: '#7fa9d2',
+    rows: [
+      ['Ejecutar mantenciones eléctricas y mecánicas', 'Mantiene continuidad de la operación.'],
+      ['Diagnosticar y resolver fallas', 'Reduce tiempos de detención y pérdidas operativas.'],
+      ['Realizar inspecciones y control de equipos', 'Previene fallas críticas y mejora confiabilidad.'],
+      ['Apoyar respuesta operativa en terreno', 'Asegura rapidez y continuidad operacional.']
+    ]
+  },
+  supervisorServicios: {
+    title: '🟡 Supervisor de Servicios Generales',
+    color: '#ffc20e',
+    rows: [
+      ['Coordinar servicios de apoyo operacional', 'Mantiene condiciones habilitantes para la operación.'],
+      ['Supervisar proveedores y servicios externos', 'Asegura cumplimiento y continuidad de servicios.'],
+      ['Controlar orden y condiciones generales', 'Reduce desviaciones operativas y riesgos básicos.'],
+      ['Gestionar requerimientos operativos menores', 'Permite continuidad y soporte al equipo operacional.']
+    ]
+  }
+};
+
+function normalizeText(el){ return (el.textContent || '').replace(/\s+/g,' ').trim().toUpperCase(); }
+function detectRole(el){
+  const t = normalizeText(el);
+  if(t.includes('JEFE DE SOPORTE')) return 'jefe';
+  if(t.includes('ASISTENTE DE PLANIFICACIÓN') || t.includes('ASISTENTE DE PLANIFICACION')) return 'asistente';
+  if(t.includes('SUPERVISOR DE MANTENCIÓN') || t.includes('SUPERVISOR DE MANTENCION')) return 'supervisorMantencion';
+  if(t.includes('OPERADOR DE MANTENCIÓN') || t.includes('OPERADOR DE MANTENCION') || t.includes('OPERADORES DE MANTENCIÓN') || t.includes('OPERADORES DE MANTENCION')) return 'operadorMantencion';
+  if(t.includes('SUPERVISOR DE SERVICIOS GENERALES')) return 'supervisorServicios';
+  return null;
+}
+function tooltipHTML(data){
+  return `<h3>${data.title}</h3><table><thead><tr><th>Función clave</th><th>Impacto en el negocio</th></tr></thead><tbody>${data.rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table>`;
+}
+const tooltip = document.createElement('div');
+tooltip.className = 'role-tooltip';
+document.body.appendChild(tooltip);
+function positionTooltip(ev){
+  const pad = 14;
+  const rect = tooltip.getBoundingClientRect();
+  let x = ev.clientX + 18;
+  let y = ev.clientY + 18;
+  if(x + rect.width + pad > window.innerWidth) x = ev.clientX - rect.width - 18;
+  if(y + rect.height + pad > window.innerHeight) y = window.innerHeight - rect.height - pad;
+  if(y < pad) y = pad;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+document.querySelectorAll('.box, .training td:first-child').forEach(el => {
+  const key = detectRole(el);
+  if(!key || !roleFunctions[key]) return;
+  el.classList.add('has-role-tooltip');
+  el.addEventListener('mouseenter', ev => {
+    const data = roleFunctions[key];
+    tooltip.innerHTML = tooltipHTML(data);
+    tooltip.style.borderTopColor = data.color;
+    tooltip.classList.add('visible');
+    positionTooltip(ev);
+  });
+  el.addEventListener('mousemove', positionTooltip);
+  el.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+});
+
+
+const slide4 = document.getElementById('slide4');
+const infoToggle = slide4 ? slide4.querySelector('.info-toggle') : null;
+if(infoToggle){
+  infoToggle.addEventListener('click', () => {
+    const hidden = slide4.classList.toggle('hide-info');
+    infoToggle.setAttribute('aria-pressed', hidden ? 'true' : 'false');
+    infoToggle.textContent = hidden ? 'Mostrar información complementaria' : 'Ocultar información complementaria';
+  });
+}
+
+</script>
+
+</body>
+</html>
